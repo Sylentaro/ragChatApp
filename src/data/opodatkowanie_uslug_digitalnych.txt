@@ -1,0 +1,5 @@
+Świadczenie usług cyfrowych (SaaS, dostęp do platform, e-learning) podlega szczególnym zasadom opodatkowania VAT. Kluczowe jest miejsce świadczenia usługi, które w przypadku klientów z UE determinuje obowiązek rejestracji w systemie OSS.
+
+Dla klientów spoza UE możliwe jest zastosowanie stawki 0% VAT, o ile zostaną spełnione warunki dokumentacyjne. W przeciwnym razie może dojść do błędnego zastosowania stawki VAT i konieczności korekty.
+
+Należy regularnie monitorować przepisy dotyczące usług elektronicznych, ponieważ zmiany regulacyjne zachodzą bardzo dynamicznie.
