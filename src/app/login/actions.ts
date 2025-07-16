@@ -1,11 +1,11 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClientServer } from "@/lib/supabase/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function login(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await createClientServer();
   const loginData = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -18,7 +18,7 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/chat");
+  redirect("/conversation");
 }
 
 export default login;

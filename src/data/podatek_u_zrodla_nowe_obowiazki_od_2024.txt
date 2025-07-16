@@ -1,0 +1,5 @@
+Od 2024 r. rozszerzono zakres obowiązków dotyczących podatku u źródła (WHT), zwłaszcza dla płatności przekraczających 2 mln zł rocznie do jednego kontrahenta zagranicznego.
+
+Płatnik musi zweryfikować, czy kontrahent spełnia warunki rzeczywistego właściciela (beneficial owner), oraz zgromadzić odpowiednią dokumentację.
+
+Brak należytej staranności może skutkować obowiązkiem pobrania 19% lub 20% podatku oraz odpowiedzialnością karną skarbową.

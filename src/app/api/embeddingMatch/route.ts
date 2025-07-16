@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/route";
+import { createClientRoute } from "@/lib/supabase/client";
 
 export async function POST(request: NextRequest) {
   const { queryEmbedding } = await request.json();
 
-  const supabase = createClient(request);
+  const supabase = createClientRoute(request);
 
   const { data, error } = await supabase.rpc("match_embeddings", {
     query_embedding: queryEmbedding,

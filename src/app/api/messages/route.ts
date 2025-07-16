@@ -1,13 +1,20 @@
-import { createClient } from "@/lib/supabase/route";
+import { createClientRoute } from "@/lib/supabase/client";
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const supabase = createClient(request);
+  const supabase = createClientRoute(request);
 
   const { searchParams } = new URL(request.url);
 
   const conversationId = searchParams.get("conversationId");
+
+  if (!conversationId) {
+    return NextResponse.json(
+      { error: "Missing conversationId!" },
+      { status: 400 }
+    );
+  }
 
   const { data, error } = await supabase
     .from("messages")
@@ -23,7 +30,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = createClient(request);
+  const supabase = createClientRoute(request);
   const { conversationId, content, role } = await request.json();
 
   let embedding = null;
@@ -38,7 +45,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    embedding = response.embeddings?.[0].values;
+    let embeddingValues = response.embeddings?.[0].values;
+    embedding = embeddingValues && `[${embeddingValues?.join(", ")}]`;
   }
 
   const { data, error } = await supabase

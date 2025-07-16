@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/route";
+import { createClientRoute } from "@/lib/supabase/client";
 import { chunkText } from "@/lib/serverUtils";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
   console.table(chunkedData); // Debugging: log the chunked data to console
 
-  const supabase = createClient(request);
+  const supabase = createClientRoute(request);
   const { error } = await supabase.from("knowledge_chunks").insert(chunkedData);
 
   if (error) {

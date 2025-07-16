@@ -1,12 +1,44 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1f2937;
+  /* Tailwind gray-800 */
+  --border: #d1d5db;
+  /* Tailwind gray-300 */
+  --ring: #2563eb;
+  /* Tailwind blue-600 */
+  --input: #f9fafb;
+  /* Tailwind gray-50 */
 }
 
-body {
-  /* background: var(--background);
-  color: var(--foreground); */
-  font-family: Arial, Helvetica, sans-serif;
+.dark {
+  --background: #1f2937;
+  /* gray-800 */
+  --foreground: #f9fafb;
+  /* gray-50 */
+  --border: #374151;
+  /* gray-700 */
+  --ring: #3b82f6;
+  /* blue-500 */
+  --input: #374151;
+  /* gray-700 */
+}
+
+/* Styl podstawowy */
+
+@layer base {
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)];
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    border-color: var(--border);
+    background-color: var(--input);
+    outline-color: var(--ring);
+  }
 }

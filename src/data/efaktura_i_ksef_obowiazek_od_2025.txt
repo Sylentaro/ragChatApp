@@ -1,0 +1,5 @@
+Obowiązek wystawiania faktur ustrukturyzowanych przez KSeF wejdzie w życie od 1 stycznia 2025 r., co oznacza koniec faktur PDF i papierowych w obrocie gospodarczym.
+
+Każda faktura musi być wystawiona, przesłana i zatwierdzona przez system Ministerstwa Finansów. Firmy powinny już teraz dostosować systemy księgowe i procedury.
+
+Warto zaplanować szkolenia dla działu finansowego oraz przetestować integrację z KSeF, aby uniknąć błędów i kar za niedostosowanie się do przepisów.

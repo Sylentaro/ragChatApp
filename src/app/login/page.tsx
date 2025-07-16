@@ -1,13 +1,13 @@
 import Login from "@/components/pages/LoginPage";
-import { createClient } from "@/lib/supabase/server";
+import { createClientServer } from "@/lib/supabase/client";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
-  const supabase = await createClient();
+  const supabase = await createClientServer();
   const { data, error } = await supabase.auth.getUser();
   if (data?.user || !error) {
     // If user is already logged in, redirect to chat page
-    redirect("/chat");
+    redirect("/conversation");
   }
   return <Login />;
 }

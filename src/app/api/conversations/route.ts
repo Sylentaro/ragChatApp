@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/route";
+import { createClientRoute } from "@/lib/supabase/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const supabase = createClient(request);
+  const supabase = createClientRoute(request);
   const { userId } = await request.json();
 
   const { data, error } = await supabase
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const supabase = createClient(request);
+  const supabase = createClientRoute(request);
   const { id, title } = await request.json();
 
   const { data, error } = await supabase
@@ -42,7 +42,7 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const supabase = createClient(request);
+  const supabase = createClientRoute(request);
   const { id } = await request.json();
 
   const { error } = await supabase.from("conversations").delete().eq("id", id);
