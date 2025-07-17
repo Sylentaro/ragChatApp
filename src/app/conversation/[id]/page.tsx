@@ -12,8 +12,7 @@ export default async function ChatMessages(props: PageProps) {
   // First, check if conversation exists
   try {
     await conversationExists(id);
-  } catch (error) {
-    console.log("Wystąpił błąd:", error);
+  } catch (_error) {
     redirect("/conversation");
   }
 
@@ -21,8 +20,7 @@ export default async function ChatMessages(props: PageProps) {
   let messages = [];
   try {
     messages = await getMessages(id);
-  } catch (error) {
-    console.log("Wystąpił błąd:", error);
+  } catch (_error) {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center">

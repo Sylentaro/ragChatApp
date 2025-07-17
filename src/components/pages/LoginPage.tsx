@@ -35,9 +35,8 @@ export default function LoginPage() {
           }
         } catch (err) {
           if (err instanceof Error) {
-            toast.error("Błąd rejestracji: " + err.message);
-          } else {
-            toast.error("Błąd rejestracji: Nieznany błąd");
+            console.log(err.message);
+            toast.error("Błąd rejestracji!");
           }
         }
       }

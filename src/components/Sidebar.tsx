@@ -115,8 +115,7 @@ export default function Sidebar({ user }: SidebarProps) {
         if (!response.ok) throw new Error("Błąd pobierania rozmów");
         const data = await response.json();
         setConversations(data);
-      } catch (error) {
-        console.log("Wystąpił błąd:", error);
+      } catch (_error) {
         toast.error("Błąd pobierania rozmów");
       } finally {
         setLoading(false);

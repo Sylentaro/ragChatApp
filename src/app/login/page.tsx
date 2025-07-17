@@ -7,8 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function Login() {
   try {
     await getUser();
-  } catch (error) {
-    console.log("Wystąpił błąd:", error);
+  } catch (_error) {
     return <LoginPage />;
   }
   redirect("/conversation");
