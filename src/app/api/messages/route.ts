@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    let embeddingValues = response.embeddings?.[0].values;
+    const embeddingValues = response.embeddings?.[0].values;
     embedding = embeddingValues && `[${embeddingValues?.join(", ")}]`;
   }
 

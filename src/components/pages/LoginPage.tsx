@@ -18,8 +18,8 @@ export default function LoginPage() {
       if (mode === "login") {
         try {
           await login(formData);
-        } catch (err: any) {
-          if (!isRedirectError(err)) {
+        } catch (err) {
+          if (!isRedirectError(err) && err instanceof Error) {
             toast.error("Błąd logowania: " + (err?.message || "Nieznany błąd"));
           }
         }
@@ -33,8 +33,12 @@ export default function LoginPage() {
             setMode("login");
             form.reset();
           }
-        } catch (err: any) {
-          toast.error("Błąd rejestracji: " + (err?.message || "Nieznany błąd"));
+        } catch (err) {
+          if (err instanceof Error) {
+            toast.error("Błąd rejestracji: " + err.message);
+          } else {
+            toast.error("Błąd rejestracji: Nieznany błąd");
+          }
         }
       }
     });

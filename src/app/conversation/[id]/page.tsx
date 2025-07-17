@@ -3,7 +3,7 @@ import MessageWindow from "@/components/MessageWindow";
 import { redirect } from "next/navigation";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ChatMessages(props: PageProps) {
@@ -13,6 +13,7 @@ export default async function ChatMessages(props: PageProps) {
   try {
     await conversationExists(id);
   } catch (error) {
+    console.error("Wystąpił błąd:", error);
     redirect("/conversation");
   }
 
@@ -21,6 +22,7 @@ export default async function ChatMessages(props: PageProps) {
   try {
     messages = await getMessages(id);
   } catch (error) {
+    console.error("Wystąpił błąd:", error);
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
