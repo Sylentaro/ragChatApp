@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { toast } from "sonner";
 import { Pencil, Trash2 } from "lucide-react";
 import LogoutForm from "./LogoutForm";
@@ -12,14 +13,17 @@ interface SidebarProps {
     id: string;
     email: string | undefined;
   };
-  initialConversations: Tables<"conversations">[];
+  // initialConversations: Tables<"conversations">[];
 }
 
-export default function Sidebar({ user, initialConversations }: SidebarProps) {
+export default function Sidebar({ user }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [conversations, setConversations] = useState(initialConversations);
+  const [conversations, setConversations] = useState<Tables<"conversations">[]>(
+    []
+  );
+  const [loading, setLoading] = useState(true);
   const [blockSidebar, setBlockSidebar] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tempTitle, setTempTitle] = useState<string>("");
@@ -87,10 +91,6 @@ export default function Sidebar({ user, initialConversations }: SidebarProps) {
     setConversations((prev) => prev.filter((conv) => conv.id !== id));
   }
 
-  function handleSwitchConversation(id: string) {
-    router.push(`/conversation/${id}`);
-  }
-
   function handleRename(id: string, newTitle: string) {
     const trimmed = newTitle.trim();
     const original =
@@ -105,98 +105,142 @@ export default function Sidebar({ user, initialConversations }: SidebarProps) {
     setTempTitle("");
   }
 
+  useEffect(() => {
+    const fetchConversations = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/conversations?userId=${encodeURIComponent(user.id)}`
+        );
+        if (!response.ok) throw new Error("Błąd pobierania rozmów");
+        const data = await response.json();
+        setConversations(data);
+      } catch (err) {
+        toast.error("Błąd pobierania rozmów");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchConversations();
+  }, [user.id]);
+
   return (
     <div className="h-screen bg-white flex flex-col border-r border-gray-200 shadow-sm max-w-xs w-full">
       <LogoutForm />
       <span className="text-xs text-gray-500 px-4">{user.email}</span>
       <div className="p-4 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <h2 className="font-bold text-lg mb-4">Twoje rozmowy</h2>
-        <ul className="space-y-2">
-          {conversations.map((conv) => (
-            <li
-              key={conv.id}
-              className={`flex items-center group rounded transition p-2 ${
-                conv.id === selectedConversationId ? "bg-gray-200" : ""
-              }`}
+        {loading ? (
+          <div className="flex justify-center items-center h-32">
+            <svg
+              className="animate-spin h-6 w-6 text-gray-400"
+              viewBox="0 0 24 24"
             >
-              <div
-                className={`flex-1 cursor-pointer rounded px-2 py-1 ${
-                  editingId !== conv.id &&
-                  !blockSidebar &&
-                  conv.id !== selectedConversationId
-                    ? "hover:bg-gray-100"
-                    : ""
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 000 16v-4l-3.5 3.5L12 24v-4a8 8 0 01-8-8z"
+              />
+            </svg>
+          </div>
+        ) : (
+          <ul className="space-y-2">
+            {conversations.map((conv) => (
+              <li
+                key={conv.id}
+                className={`flex items-center group rounded transition p-2 ${
+                  conv.id === selectedConversationId ? "bg-gray-200" : ""
                 }`}
-                onClick={
-                  !blockSidebar && editingId !== conv.id
-                    ? () => handleSwitchConversation(conv.id)
-                    : undefined
-                }
               >
                 {editingId === conv.id ? (
-                  <input
-                    type="text"
-                    value={tempTitle}
-                    onChange={(e) => setTempTitle(e.target.value)}
-                    onBlur={() => handleRename(conv.id, tempTitle)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleRename(conv.id, tempTitle);
-                      }
-                    }}
-                    autoFocus
-                    className="w-full px-2 py-1 border rounded"
-                  />
+                  <div className="flex-1 rounded px-2 py-1">
+                    <input
+                      type="text"
+                      value={tempTitle}
+                      onChange={(e) => setTempTitle(e.target.value)}
+                      onBlur={() => handleRename(conv.id, tempTitle)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleRename(conv.id, tempTitle);
+                        }
+                      }}
+                      autoFocus
+                      className="w-full px-2 py-1 border rounded"
+                    />
+                  </div>
                 ) : (
-                  <span className="truncate">{conv.title || "Bez tytułu"}</span>
+                  <Link
+                    href={`/conversation/${conv.id}`}
+                    className={`flex-1 cursor-pointer rounded px-2 py-1 truncate ${
+                      !blockSidebar &&
+                      editingId !== conv.id &&
+                      conv.id !== selectedConversationId
+                        ? "hover:bg-gray-100"
+                        : ""
+                    }`}
+                    tabIndex={blockSidebar || editingId === conv.id ? -1 : 0}
+                    aria-disabled={blockSidebar || editingId === conv.id}
+                    prefetch={false}
+                  >
+                    {conv.title || "Bez tytułu"}
+                  </Link>
                 )}
-              </div>
 
-              <div
-                className={`flex items-center space-x-2 ml-2 transition ${
-                  conv.id === selectedConversationId
-                    ? "opacity-100"
-                    : "opacity-70 group-hover:opacity-100"
-                } `}
-              >
-                <button
-                  disabled={blockSidebar}
-                  onClick={() => {
-                    setEditingId(conv.id);
-                    setTempTitle(conv.title || "");
-                  }}
-                  className={`p-1 rounded hover:bg-gray-200 ${
-                    blockSidebar
-                      ? "cursor-not-allowed text-gray-400"
-                      : "text-blue-600"
-                  }`}
+                <div
+                  className={`flex items-center space-x-2 ml-2 transition ${
+                    conv.id === selectedConversationId
+                      ? "opacity-100"
+                      : "opacity-70 group-hover:opacity-100"
+                  } `}
                 >
-                  <Pencil size={16} />
-                </button>
+                  <button
+                    disabled={blockSidebar}
+                    onClick={() => {
+                      setEditingId(conv.id);
+                      setTempTitle(conv.title || "");
+                    }}
+                    className={`p-1 rounded hover:bg-gray-200 ${
+                      blockSidebar
+                        ? "cursor-not-allowed text-gray-400"
+                        : "text-blue-600"
+                    }`}
+                  >
+                    <Pencil size={16} />
+                  </button>
 
-                <button
-                  disabled={blockSidebar}
-                  onClick={() => handleDeleteConversation(conv.id)}
-                  className={`p-1 rounded hover:bg-gray-200 ${
-                    blockSidebar
-                      ? "cursor-not-allowed text-gray-400"
-                      : "text-red-600"
-                  }`}
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+                  <button
+                    disabled={blockSidebar}
+                    onClick={() => handleDeleteConversation(conv.id)}
+                    className={`p-1 rounded hover:bg-gray-200 ${
+                      blockSidebar
+                        ? "cursor-not-allowed text-gray-400"
+                        : "text-red-600"
+                    }`}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="p-4">
         <button
           onClick={handleNewConversation}
-          disabled={blockSidebar}
+          disabled={blockSidebar || loading}
           className={`w-full py-2 px-4 rounded text-white transition-all ${
-            blockSidebar
+            blockSidebar || loading
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-green-600 hover:bg-green-700"
           }`}

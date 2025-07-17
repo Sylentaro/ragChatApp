@@ -13,6 +13,11 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
 
   const { message } = body;
+
+  if (!message) {
+    return NextResponse.json({ error: "Missing message!" }, { status: 400 });
+  }
+
   const context: MatchedEmbedding[] = body.context;
 
   const contextText = context

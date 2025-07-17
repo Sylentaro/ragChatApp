@@ -4,6 +4,13 @@ import { createClientRoute } from "@/lib/supabase/client";
 export async function POST(request: NextRequest) {
   const { queryEmbedding } = await request.json();
 
+  if (!queryEmbedding) {
+    return NextResponse.json(
+      { error: "Missing queryEmbedding!" },
+      { status: 400 }
+    );
+  }
+
   const supabase = createClientRoute(request);
 
   const { data, error } = await supabase.rpc("match_embeddings", {
