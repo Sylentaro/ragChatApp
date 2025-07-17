@@ -8,7 +8,7 @@ export default async function Login() {
   try {
     await getUser();
   } catch (error) {
-    console.error("Wystąpił błąd:", error);
+    console.log("Wystąpił błąd:", error);
     return <LoginPage />;
   }
   redirect("/conversation");

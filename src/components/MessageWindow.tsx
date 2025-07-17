@@ -20,17 +20,28 @@ export default function MessageWindow(props: ChatWindowProps) {
   async function handleSubmit() {
     if (input.trim() === "") return;
     setInputReady(false);
-
+    const dummyMessage = {
+      id: crypto.randomUUID(),
+      content: input,
+      role: "user",
+      created_at: new Date().toISOString(),
+      conversation_id: conversationId,
+      embedding: null,
+    };
+    setMessages((prev) => [...prev, dummyMessage]);
     try {
       const resUserMsg = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ conversationId, content: input }),
       });
-      if (!resUserMsg.ok) throw new Error("Błąd wysyłania wiadomości");
-
+      if (!resUserMsg.ok) {
+        setMessages((prev) =>
+          prev.filter((item) => item.id !== dummyMessage.id)
+        );
+        throw new Error("Błąd wysyłania wiadomości");
+      }
       const newMessage = await resUserMsg.json();
-      setMessages((prev) => [...prev, newMessage]);
       setInput("");
 
       const resMatch = await fetch("/api/embeddingMatch", {
